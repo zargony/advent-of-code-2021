@@ -1,4 +1,5 @@
 use advent_of_code_2021::Input;
+use itertools::Itertools;
 use std::error;
 use std::str::FromStr;
 use thiserror::Error;
@@ -76,7 +77,7 @@ impl ExactPosition {
 }
 
 fn main() -> Result<(), Box<dyn error::Error>> {
-    let course: Vec<Movement> = Input::day(2)?.parsed_lines()?;
+    let course: Vec<Movement> = Input::day(2)?.parsed_lines().try_collect()?;
 
     let mut position = Position::default();
     position.go(&course);

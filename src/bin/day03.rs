@@ -1,6 +1,6 @@
 use advent_of_code_2021::Input;
+use itertools::Itertools;
 use std::error;
-use std::fmt::Display;
 use std::num::ParseIntError;
 
 /// Distribution of bits
@@ -17,20 +17,18 @@ struct Diag(Vec<u16>, usize);
 
 impl Diag {
     /// Create new dignostic report
-    fn new<I, L>(lines: I) -> Result<Self, ParseIntError>
-    where
-        I: IntoIterator<Item = L>,
-        L: AsRef<str> + Display,
-    {
-        let mut len = 0;
-        let numbers = lines
-            .into_iter()
-            .map(|line| {
-                len = len.max(line.as_ref().len());
-                u16::from_str_radix(line.as_ref(), 2)
-            })
-            .collect::<Result<_, _>>()?;
-        Ok(Self(numbers, len))
+    fn new<S: AsRef<str>>(lines: &[S]) -> Result<Self, ParseIntError> {
+        Ok(Self(
+            lines
+                .iter()
+                .map(|line| u16::from_str_radix(line.as_ref(), 2))
+                .try_collect()?,
+            lines
+                .iter()
+                .map(|line| line.as_ref().len())
+                .max()
+                .unwrap_or(0),
+        ))
     }
 
     /// Count one bits at position i
@@ -107,7 +105,8 @@ impl Diag {
 }
 
 fn main() -> Result<(), Box<dyn error::Error>> {
-    let diag = Diag::new(&Input::day(3)?.lines()?)?;
+    let lines: Vec<_> = Input::day(3)?.lines().try_collect()?;
+    let diag = Diag::new(&lines)?;
 
     println!(
         "Gamma: {}, epsilon: {}, power: {}",

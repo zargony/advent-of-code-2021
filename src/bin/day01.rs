@@ -13,7 +13,7 @@ fn sliding_window_sum(iter: impl Iterator<Item = u32>) -> impl Iterator<Item = u
 }
 
 fn main() -> Result<(), Box<dyn error::Error>> {
-    let depths: Vec<u32> = Input::day(1)?.parsed_lines()?;
+    let depths: Vec<u32> = Input::day(1)?.parsed_lines().try_collect()?;
 
     let increasing_depths = count_increasing(depths.iter().copied());
     println!("Increasing depths: {}", increasing_depths);
