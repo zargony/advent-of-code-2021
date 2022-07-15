@@ -7,21 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          default: true
-          profile: minimal
           components: clippy, rustfmt
-      - name: Display version information
-        run: rustup --version; cargo --version; rustc --version
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Check formatting
         run: cargo fmt --all -- --check
-      - name: Check
-        run: cargo check --workspace --all-targets --all-features
-      - name: Clippy
+      - name: Check Clippy
         run: cargo clippy --workspace --all-targets --all-features -- --deny warnings --allow deprecated
 
   test:
@@ -30,19 +23,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          default: true
-          profile: minimal
-      - name: Display version information
-        run: rustup --version; cargo --version; rustc --version
+        uses: dtolnay/rust-toolchain@stable
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build everything
         run: cargo build --workspace --all-targets
       - name: Run all unit tests
-        run: cargo test --workspace
+        run: cargo test --workspace --all-targets --all-features
 
   run:
     name: Run
@@ -50,15 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          default: true
-          profile: minimal
-      - name: Display version information
-        run: rustup --version; cargo --version; rustc --version
+        uses: dtolnay/rust-toolchain@stable
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build everything
         run: cargo build --workspace --all-targets --release
       - name: Run all solutions
