@@ -80,11 +80,10 @@ impl Polymer {
         self.groups = self
             .groups
             .iter()
-            .map(|((a, b), n)| match rules.get(*a, *b) {
+            .flat_map(|((a, b), n)| match rules.get(*a, *b) {
                 Some(insert) => vec![(*a, insert, *n), (insert, *b, *n)],
                 None => vec![(*a, *b, *n)],
             })
-            .flatten()
             .fold(HashMap::new(), |mut groups, (a, b, n)| {
                 groups.entry((a, b)).and_modify(|e| *e += n).or_insert(n);
                 groups

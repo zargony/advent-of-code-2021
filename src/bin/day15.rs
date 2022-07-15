@@ -55,12 +55,11 @@ impl Map {
                 bestpaths
                     .iter()
                     .enumerate()
-                    .map(|(y, row)| {
+                    .flat_map(|(y, row)| {
                         row.iter()
                             .enumerate()
                             .map(move |(x, bestpath)| (y, x, bestpath))
                     })
-                    .flatten()
                     .filter_map(|(y, x, bestpath)| {
                         bestpath
                             .risk
@@ -103,18 +102,16 @@ impl Map {
     /// Enlarge map by a given factor in both direction
     fn enlarge(&mut self, factor: usize) {
         let new_map: Vec<Vec<u8>> = (0..factor)
-            .map(|yy| {
+            .flat_map(|yy| {
                 self.0.iter().map(move |row| {
                     (0..factor)
-                        .map(|xx| {
+                        .flat_map(|xx| {
                             row.iter()
                                 .map(move |risk| (risk + yy as u8 + xx as u8 - 1) % 9 + 1)
                         })
-                        .flatten()
                         .collect()
                 })
             })
-            .flatten()
             .collect();
         self.0 = new_map;
     }

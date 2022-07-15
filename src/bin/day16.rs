@@ -17,17 +17,15 @@ enum Error {
 /// Parse bits from hexadecimal digits
 #[allow(clippy::needless_lifetimes)]
 fn hex2bits<'a>(s: &'a str) -> impl Iterator<Item = Result<bool, Error>> + 'a {
-    s.chars()
-        .map(|ch| {
-            let n = ch.to_digit(16);
-            [
-                n.map(|n| n & 0b1000 > 0).ok_or(Error::InvalidHexDigit(ch)),
-                n.map(|n| n & 0b0100 > 0).ok_or(Error::InvalidHexDigit(ch)),
-                n.map(|n| n & 0b0010 > 0).ok_or(Error::InvalidHexDigit(ch)),
-                n.map(|n| n & 0b0001 > 0).ok_or(Error::InvalidHexDigit(ch)),
-            ]
-        })
-        .flatten()
+    s.chars().flat_map(|ch| {
+        let n = ch.to_digit(16);
+        [
+            n.map(|n| n & 0b1000 > 0).ok_or(Error::InvalidHexDigit(ch)),
+            n.map(|n| n & 0b0100 > 0).ok_or(Error::InvalidHexDigit(ch)),
+            n.map(|n| n & 0b0010 > 0).ok_or(Error::InvalidHexDigit(ch)),
+            n.map(|n| n & 0b0001 > 0).ok_or(Error::InvalidHexDigit(ch)),
+        ]
+    })
 }
 
 /// Parse integer number from bitstream
